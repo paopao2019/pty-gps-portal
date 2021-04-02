@@ -1,14 +1,23 @@
 <template>
   <div id="app">
     <div id="nav">
-      <router-link to="/">Home</router-link> |
-      <router-link to="/about">About</router-link>
+      <router-link to="/">教学点管理</router-link> |
+      <router-link to="/distance">距离计算</router-link> |
+      <keepalived>
+        <router-link to="/map">教学点地图</router-link>
+      </keepalived>
+
+      <el-divider></el-divider>
+
     </div>
     <router-view/>
   </div>
 </template>
 
 <style>
+  /*引入样式*/
+  @import './assets/css/pty.css';
+
 #app {
   font-family: Avenir, Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
