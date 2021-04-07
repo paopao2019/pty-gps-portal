@@ -99,8 +99,7 @@
         });
         setTimeout(() => {
           loading.close();
-        }, 1000);
-
+        }, 2000);
 
       },
       changeSort(obj1, obj2) {
@@ -122,8 +121,6 @@
 
       },
       handleClose(done) {
-
-
         done()
       },
       closeDialog() {
