@@ -11,7 +11,7 @@
       </el-form>
       <el-form>
         <el-form-item>
-          <el-button @click="addStation" type="primary">新教学点</el-button>
+          <el-button @click="addStation" type="primary">新增教学点</el-button>
         </el-form-item>
       </el-form>
     </div>

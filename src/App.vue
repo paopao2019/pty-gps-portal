@@ -3,9 +3,7 @@
     <div id="nav">
       <router-link to="/">教学点管理</router-link> |
       <router-link to="/distance">距离计算</router-link> |
-      <keepalived>
-        <router-link to="/map">教学点地图</router-link>
-      </keepalived>
+      <router-link to="/map">教学点地图</router-link>
 
       <el-divider></el-divider>
 

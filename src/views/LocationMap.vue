@@ -1,67 +1,65 @@
 <template>
-  <div id="container" class="container">
+  <div class="amap-wrapper">
+    <el-amap vid="amapDemo" :zoom="zoom" :center="center" class="amap-demo">
+      <el-amap-marker v-for="(marker, index) in markers" :position="marker.position" :content="marker.content" :events="marker.events"  :vid="index"></el-amap-marker>
+    </el-amap>
   </div>
 </template>
 
 <script>
-  import { getStationList } from "@/api/station";  //  此处请自行替换地址
-  export default {
-    name: "LocationMap",
+  // 要统一使用 CommonJS的导入导出方式
+  let { getStationList } = require("@/api/station");  //  此处请自行替换地址
+  module.exports  = {
+    name: 'LocationMap',
     data() {
       return {
-        stationList: []
-      }
-    },
-    mounted: function () {
-      // this.init();
+        count: 1,
+        slotStyle: {
+          padding: '2px 8px',
+          background: '#eee',
+          color: '#333',
+          border: '1px solid #aaa'
+        },
+        zoom: 10,
+        resizeEnable: true,
+        center: [121.473701,31.230416],  // 上海中心经纬度
+        markers: [
+          {
+            position: [121.517769,31.074061], //设置总部标记内容
+            events: {
+              click: () => {
+                alert('复地申公馆');
+              },
+            },
+            content: this.setZBMarketContent()
+          }
+        ],
+    };
     },
     created() {
       getStationList({page:1, pageSize:999}).then(res => {
         this.stationList = res.data.list
-        this.init()
-      })
-
-    },
-    methods: {
-      init: function () {
-        var map = new AMap.Map("container", {
-          //地图中心位置
-          center: [121.473701,31.230416], // 上海中心经纬度
-          resizeEnable: true,
-          //地图层级
-          zoom: 10,
-        });
-        AMap.plugin(["AMap.ToolBar", "AMap.Scale"], function () {
-          //地图缩放移动工具
-          map.addControl(new AMap.ToolBar());
-          //地图比例尺
-          map.addControl(new AMap.Scale());
-        });
-        // 添加锚点
-
-        var marker = new AMap.Marker({
-          offset: new AMap.Pixel(-10, -10),
-          title: '葡萄园总部'
-        });
-        marker.setContent(this.setZBMarketContent()); //设置总部标记内容
-        marker.setPosition([121.517769,31.074061]);
-        map.add(marker);
-
+        // 给机构添加节点
         // 遍历机构 给机构添加标记
         for (let i=0;i<this.stationList.length;i++) {
           const jigouLocation = this.stationList[i].location
           const jigouCode = this.stationList[i].code
-          let jigouMarket = new AMap.Marker({
-            offset: new AMap.Pixel(0, 0),
-            title: jigouCode
-          });
-          jigouMarket.setContent(this.setJGMarketContent(jigouCode))
-          jigouMarket.setPosition([jigouLocation.split(',')[0],jigouLocation.split(',')[1]])
-          map.add(jigouMarket)
+          let jigouMarket = {}
+          jigouMarket.content = this.setJGMarketContent(jigouCode)
+          jigouMarket.position = [jigouLocation.split(',')[0], jigouLocation.split(',')[1]]
+          jigouMarket.events = {
+            click: () => {
+              alert(this.stationList[i].address);
+            },
+          }
+          this.markers.push(jigouMarket);
         }
-
+      })
+    },
+    methods: {
+      onClick() {
+        this.count += 1;
       },
-      // 设置总部的自定义 标签内容
       setZBMarketContent() {
         // 自定义点标记内容
         var markerContent = document.createElement("div");
@@ -97,21 +95,16 @@
         markerSpan.innerHTML = title;
         markerContent.appendChild(markerSpan);
         return markerContent
-      }
-    },
-
-  }
+      },
+    }
+  };
 </script>
 
 
-
 <style scoped>
-  #container {
+  .amap-wrapper {
     width:1100px;
     height: 500px;
     margin: -20px  auto 0 auto;
   }
-
-
-
 </style>
